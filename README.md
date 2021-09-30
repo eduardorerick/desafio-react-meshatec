@@ -9,6 +9,8 @@ Baixe o arquivo zip e extraia o conteúdo para a pasta do seu repositório local
 Instale as dependências 
 
     npm i
+    
+    npm run dev
 
 E já deve estar tudo funcionando!
 
