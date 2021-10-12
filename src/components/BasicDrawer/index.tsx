@@ -8,8 +8,6 @@ import {
   DrawerCloseButton,
   DrawerHeader,
   DrawerBody,
-  DrawerFooter,
-  Input,
   useDisclosure,
   HStack,
   Text
@@ -34,7 +32,7 @@ export default function BasicDrawer() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Links</DrawerHeader>
+          <DrawerHeader>Pages</DrawerHeader>
 
           <DrawerBody>
             <HStack spacing={['0', '10']}>
@@ -44,13 +42,8 @@ export default function BasicDrawer() {
                 </Link>
               </Button>
               <Button colorScheme="gray" variant="ghost">
-                <Link href='/about' passHref>
-                  <Text fontSize='xl'>About</Text>
-                </Link>
-              </Button>
-              <Button colorScheme="gray" variant="ghost">
-                <Link href='/contact' passHref>
-                  <Text fontSize='xl'>Contact</Text>
+                <Link href='/playlists' passHref>
+                  <Text fontSize='xl'>Playlists</Text>
                 </Link>
               </Button>
             </HStack>

@@ -1,11 +1,13 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Flex, Text, Button, Image, Select, Input, HStack, Box, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Tfoot } from '@chakra-ui/react'
-import BasicModal from '../components/BasicModal'
-import { useExampleContext } from '../contexts/ExampleContext'
+import { Flex, Spinner, Text, Button, Image, Select, Input, HStack, Box, Table, TableCaption, Thead, Tr, Th, Tbody, Td, Tfoot } from '@chakra-ui/react'
+import { usePlaylist } from '../contexts/PlaylistContext'
 import { useEffect, useState } from 'react'
 import { getWeather } from '../services/weatherApi'
-import { getPlaylist } from '../services/deezerApi'
+import { getPlaylist } from '../services/musicApi'
+import { PlaylistCard } from '../components/PlaylistCard'
+import { toast } from 'react-toastify';
+
 
 interface CityProps {
   name: string;
@@ -26,12 +28,26 @@ interface PlaylistProps {
 
 
 const Home: NextPage = () => {
-  const { isOn, toggleExample } = useExampleContext();
+  const { savePlaylist } = usePlaylist();
   const [cityName, setCityName] = useState('');
   const [cityCard, setCityCard] = useState<CityProps[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const inputError = () => {
+    return toast.error('Please type a valid city name!', {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      });;
+  }
+  
+  async function createPlaylist(playlist: CityProps) {
+    await savePlaylist(playlist)
+  }
 
-
-  console.log(cityCard)
   return (
     <>
       <Head>
@@ -39,136 +55,59 @@ const Home: NextPage = () => {
         <meta name="description" content="Desafio React para vaga na Mesha Tecnologia" />
         <link rel="icon" href="/logo.png" />
       </Head>
-
-      <Button onClick={async () => console.log(getPlaylist("Rock"))}>
-        Aqui
-      </Button>
       <Flex direction='column' align='center' justify='center' p='8'>
         <Text fontSize='5xl' textAlign='center'>
           Find the best playlist here!
         </Text>
 
-
         <Flex >
-          <HStack spacing='8'>
-            <Input
-              placeholder='Digite a cidade aqui'
-              value={cityName}
-              onChange={e => setCityName(e.target.value)}
-              bg='white'
-              _hover={{
-                bg: 'gray.100',
-              }}
-              _focus={{
-                bg: 'white',
-              }}
-              h='14'
-              w='md'
-            />
-            {/* <Select
-              value={cityName}
-              onChange={e => setCityName(e.target.value)}
-              _hover={{
-                bg: 'gray.100',
-              }}
-              _focus={{
-                bg: 'white',
-              }}
-              bg='white'
-              placeholder="Select your city"
-              size='lg'
-              variant='filled'
-              h='14'
-              w='md'
-            >
-              <option value="London">London</option>
-              <option value="Brooklyn">Brooklyn</option>
-              <option value="New York">New York</option>
-              <option value="Oklahoma">Oklahoma</option>
-            </Select> */}
-
-            <Button
-              onClick={async () => {
-                const cityData = await getWeather(cityName)
-                const playlist = await getPlaylist(cityData.genre)
-                await setCityCard([...cityCard,
-                {
-                  name: cityData.name,
-                  temp: cityData.temp,
-                  genre: cityData.genre,
-                  playlist: playlist
-                }])
-              }}
-              h='14'
-              bg='white'
-              _hover={{ bg: 'gray.100' }}>
-              <Text> Search your playlist!</Text>
-            </Button>
-          </HStack>
-        </Flex>
-        {cityCard.map((city, idx) => {
-
-          return (
-            <Flex
-              key={idx}
-              width='700px'
-              height='300px'
-              background='gray.600'
-              m='10'
-            >
-              <Flex
-                direction='column'
-                p='8'
-                fontSize='3xl'
-                color='blue.200'
-                justify='space-between'
-
-              >
-                <Box>
-                  <Text>{city.temp} ºC</Text>
-                  <Text>{city.name}</Text>
-                </Box>
-                <Text>The genre for this temp is: {city.genre}
-                </Text>
-              </Flex>
-
-              <Box
-                bg='blue.900'
-                color='whiteAlpha.800'
-                overflowY='scroll'
-                css={{
-                  '&::-webkit-scrollbar': {
-                    width: '4px',
-                    background: '#fff'
-                  }
+          {isLoading ? <Spinner size='xl' /> :
+            <HStack spacing='8'>
+              <Input
+                placeholder='Digite a cidade aqui'
+                value={cityName}
+                onChange={e => setCityName(e.target.value)}
+                bg='white'
+                _hover={{
+                  bg: 'gray.100',
                 }}
-              >
+                _focus={{
+                  bg: 'white',
+                }}
+                h='14'
+                w='md'
+              />
 
-                <Table variant="simple">
-                  <Thead>
-                    <Tr>
-                      <Th color='whiteAlpha.700'>Music</Th>
-                      <Th color='whiteAlpha.700'>Album</Th>
-                      <Th color='whiteAlpha.700'>Album</Th>
+              <Button
+                onClick={async () => {
+                  if (cityName == '') {
+                    return inputError()
+                  }
+                  setIsLoading(true);
+                  const cityData = await getWeather(cityName);
+                  const playlist = await getPlaylist(cityData.genre);
+                  await setCityCard([...cityCard,
+                  {
+                    name: cityData.name,
+                    temp: cityData.temp,
+                    genre: cityData.genre,
+                    playlist: playlist
+                  }]);
+                  setIsLoading(false);
+                }}
+                h='14'
+                bg='white'
+                _hover={{ bg: 'gray.100' }}>
+                <Text> Search your playlist!</Text>
+              </Button>
+            </HStack>
+          }
 
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {city.playlist.tracks.map(track => (
-                      <Tr key={track.key}>
-                        <Td><Image src={track.images.coverart} alt={track.title} /></Td>
-                        <Td>{track.title}</Td>
-                        <Td>{track.subtitle}</Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </Box>
-            </Flex>
-          )
-        })}
+        </Flex>
+        {cityCard.map((city, idx) => (
+          <PlaylistCard data={city} key={idx} createBtn />
+        ))}
       </Flex>
-
     </>
   )
 }

@@ -15,8 +15,7 @@ function pickGenre(temp: number) {
 }
 
 export const getWeather = async (city: string): Promise<CityData> => {
-  console.log(process.env.OPENWEATHER_API_KEY)
-  const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=557d6d87c71881cd50c90312e02cd819`);
+  const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`);
   const data = await response.json();
   const results = {
     name: data.name,

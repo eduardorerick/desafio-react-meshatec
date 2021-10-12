@@ -28,7 +28,7 @@ export const getPlaylist = async (genre: string): Promise<PlayListProps> => {
     "method": "GET",
     "headers": {
       "x-rapidapi-host": "shazam.p.rapidapi.com",
-      "x-rapidapi-key": "a1db4a1454msh4ffc5a63e89502ep19a464jsna28e3f71dcad"
+      "x-rapidapi-key": `${process.env.NEXT_PUBLIC_RAPIDAPI_KEY}`
     }
   })
   const data = await response.json();

@@ -16,6 +16,7 @@ export const theme = extendTheme({
   styles: {
     global: {
       body: {
+        fontSize:'sm',
         bg: 'gray.300',
         color: 'brand.chocolate'
       }
