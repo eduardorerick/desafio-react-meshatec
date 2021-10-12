@@ -15,7 +15,7 @@ export default function Header() {
         <Image
           boxSize={['5', '10']}
           src="/logo.png"
-          alt="Here is your logo"
+          alt="Eduardo Rerick Logo"
         />
         
         {isWideVersion ? (
@@ -26,13 +26,8 @@ export default function Header() {
               </Link>
             </Button>
             <Button colorScheme="gray" variant="ghost">
-              <Link href='/about' passHref>
-                <Text fontSize='xl'>About</Text>
-              </Link>
-            </Button>
-            <Button colorScheme="gray" variant="ghost">
-              <Link href='/contact' passHref>
-                <Text fontSize='xl'>Contact</Text>
+              <Link href='/playlists' passHref>
+                <Text fontSize='xl'>Playlists</Text>
               </Link>
             </Button>
           </HStack>
