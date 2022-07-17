@@ -1,4 +1,4 @@
-# desafio-react-meshatec
+# desafio-react-tech
 
 ![image](https://user-images.githubusercontent.com/82004348/137022098-d9d7297c-0690-4cdb-a085-5d7e87820fe4.png)
 
